@@ -52,9 +52,13 @@ jobs:
         cluster_name: ${{ env.CLUSTER_NAME }}
         location: ${{ env.CLUSTER_REGION }}
         
-    - id: 'get-pods'
-      run: 'kubectl get pods'
-      
+    - id: 'install-argocd'
+      run: |
+        kubectl create namespace argocd
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    - id: 'deploy-guestbook'
+      run: |
+        kubectl apply -f argocd/
     # - name: Deploy
     #   run: |-
     #     # replacing the image name in the k8s template
