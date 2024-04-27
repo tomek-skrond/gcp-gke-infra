@@ -68,7 +68,7 @@ jobs:
     name: 'apply'
     runs-on: ubuntu-latest
     environment: production
-    needs: common_steps
+    needs: terraform_plan
     steps:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
@@ -81,7 +81,7 @@ jobs:
     name: 'destroy'
     runs-on: ubuntu-latest
     environment: production
-    needs: common_steps
+    needs: terraform_plan
     steps:
     - name: Terraform Destroy
       run: terraform destroy -auto-approve -input=false
