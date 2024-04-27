@@ -24,7 +24,16 @@ locals {
   cluster_type = "stub-domains"
 }
 
-data "google_client_config" "default" {}
+provider "google" {
+  credentials = var.credential_file
+  project     = var.project_id
+  region      = var.region
+  # zone        = var.zone
+}
+
+data "google_client_config" "default" {
+  provider = google
+}
 
 provider "kubernetes" {
   host                   = "https://${module.gke.endpoint}"

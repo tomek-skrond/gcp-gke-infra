@@ -10,6 +10,10 @@ variable "domain_name" {
   type      = string
   sensitive = true
 }
+variable "credential_file" {
+  type      = string
+  sensitive = true
+}
 
 variable "project_id" {
   description = "The project ID to host the cluster in"
@@ -42,4 +46,5 @@ variable "ip_range_services" {
 
 variable "compute_engine_service_account" {
   description = "Service account to associate to the nodes in the cluster"
+  sensitive = true
 }
