@@ -55,10 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     # needs: common_steps
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./gke
+    # defaults:
+    #   run:
+    #     shell: bash
+    #     working-directory: ./gke
     steps:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -69,6 +69,7 @@ jobs:
         ls -la ../
         ls -la ../../
         ls -la ../../../
+        cd gke
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform plan -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
