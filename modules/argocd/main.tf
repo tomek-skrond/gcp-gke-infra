@@ -17,6 +17,13 @@ provider "helm" {
   }
 }
 
+complete
+resource "null_resource" "module_depends_on" {
+  triggers = {
+    value = "${length(var.module_depends_on)}"
+  }
+}
+
 
 resource "helm_release" "argocd" {
   name = "argocd"

@@ -49,4 +49,6 @@ module "argocd" {
   cluster_ca_certificate = module.cluster.ca_certificate
   cluster_endpoint       = module.cluster.kubernetes_endpoint
   token                  = module.cluster.client_token
+
+  module_depends_on = [module.cluster]
 }
