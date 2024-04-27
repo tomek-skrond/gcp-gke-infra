@@ -50,7 +50,7 @@ jobs:
     - name: Terraform Plan
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-        terraform plan -input=false
+        terraform plan -input=false -lock=false
       # working-directory: ${{ env.TF_WORKDIR }}
       
   terraform_apply:
@@ -74,7 +74,7 @@ jobs:
     - name: Terraform Apply
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-        terraform apply -auto-approve -input=false
+        terraform apply -auto-approve -input=false -lock=false
       # working-directory: ${{ env.TF_WORKDIR }}
 
 
@@ -99,5 +99,5 @@ jobs:
     - name: Terraform Destroy
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-        terraform destroy -auto-approve -input=false
+        terraform destroy -auto-approve -input=false -lock=false
       # working-directory: ${{ env.TF_WORKDIR }}
