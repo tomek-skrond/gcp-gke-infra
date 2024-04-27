@@ -45,8 +45,8 @@ jobs:
           credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
-      - name: Terraform Init
-        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+      # - name: Terraform Init
+      #   run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         # working-directory: ${{ env.TF_WORKDIR }}
   
   terraform_plan:
@@ -57,7 +57,10 @@ jobs:
     needs: common_steps
     steps:
     - name: Terraform Plan
-      run: terraform plan -input=false
+      run: |
+        cd gke
+        terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+        terraform plan -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
       
   terraform_apply:
@@ -73,7 +76,10 @@ jobs:
     #     working-directory: ./gke
     steps:
     - name: Terraform Apply
-      run: terraform apply -auto-approve -input=false
+      run: |
+        cd gke
+        terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+        terraform apply -auto-approve -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
 
 
@@ -90,5 +96,8 @@ jobs:
     #     working-directory: ./gke
     steps:
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve -input=false
+      run: |
+        cd gke
+        terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+        terraform destroy -auto-approve -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
