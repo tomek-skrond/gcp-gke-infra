@@ -13,6 +13,7 @@ on:
           - apply
           - destroy
 env:
+  TF_WORKDIR: gke
   TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
   TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
   TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
@@ -34,10 +35,6 @@ jobs:
   common_steps:
     name: 'Common Steps'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./gke
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,10 +43,12 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
+          working-directory: ${{ env.TF_WORKDIR }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Init
         run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+        working-directory: ${{ env.TF_WORKDIR }}
   
   terraform_plan:
     if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'plan' }}
@@ -60,7 +59,7 @@ jobs:
     steps:
     - name: Terraform Plan
       run: terraform plan -input=false
-
+      working-directory: ${{ env.TF_WORKDIR }}
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
@@ -76,6 +75,7 @@ jobs:
     steps:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
+      working-directory: ${{ env.TF_WORKDIR }}
 
 
   terraform_destroy:
@@ -92,3 +92,4 @@ jobs:
     steps:
     - name: Terraform Destroy
       run: terraform destroy -auto-approve -input=false
+      working-directory: ${{ env.TF_WORKDIR }}
