@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master  # Adjust the branch as needed
+      - test
   workflow_dispatch:
     inputs:
       job:
@@ -84,7 +85,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'destroy'
     name: 'destroy'
     runs-on: ubuntu-latest
-    environment: production
+    # environment: production
     needs: terraform_plan
     steps:
     - name: Checkout
