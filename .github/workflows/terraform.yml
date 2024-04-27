@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - master  # Adjust the branch as needed
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Select the job to run'
+        required: true
+        default: 'plan'
+        options:
+          - plan
+          - apply
+          - destroy 
+      
 env:
   TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
   TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
@@ -46,7 +57,8 @@ jobs:
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
-    if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
+    # if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'apply'
     name: 'apply'
     runs-on: ubuntu-latest
     environment: production
@@ -71,7 +83,8 @@ jobs:
 
   terraform_destroy:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
-    if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
+    # if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'destroy'
     name: 'destroy'
     runs-on: ubuntu-latest
     environment: production
