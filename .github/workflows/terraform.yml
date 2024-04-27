@@ -62,7 +62,8 @@ jobs:
       run: terraform plan -input=false
 
   terraform_apply:
-    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
+    # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
+    if: ${{ github.event.inputs.terraform_operation == 'apply' }}
     name: 'apply'
     runs-on: ubuntu-latest
     environment: production
@@ -72,7 +73,8 @@ jobs:
       run: terraform apply -auto-approve -input=false
 
   terraform_destroy:
-    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
+    # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
+    if: ${{ github.event.inputs.terraform_operation == 'destroy' }}
     name: 'destroy'
     runs-on: ubuntu-latest
     environment: production
