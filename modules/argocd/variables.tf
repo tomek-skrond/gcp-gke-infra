@@ -17,3 +17,7 @@ variable "cluster_endpoint" {
 variable "token" {
     
 }
+
+variable "cluster_name" {
+    
+}
