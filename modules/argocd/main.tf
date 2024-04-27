@@ -17,11 +17,17 @@ provider "helm" {
   }
 }
 
-resource "null_resource" "module_depends_on" {
-  triggers = {
-    value = "${length(var.module_depends_on)}"
-  }
+variable "argo_depends_on" {
+  # the value doesn't matter; we're just using this variable
+  # to propagate dependencies.
+  type    = any
+  default = []
 }
+# resource "null_resource" "module_depends_on" {
+#   triggers = {
+#     value = "${length(var.module_depends_on)}"
+#   }
+# }
 
 
 resource "helm_release" "argocd" {
@@ -36,4 +42,6 @@ resource "helm_release" "argocd" {
   values = [
     file("argo-config/application.yaml")
   ]
+
+  depends_on = [var.argo_depends_on]
 }

@@ -50,5 +50,5 @@ module "argocd" {
   cluster_endpoint       = module.cluster.kubernetes_endpoint
   token                  = module.cluster.client_token
 
-  module_depends_on = [module.cluster]
+  argo_depends_on = [module.cluster]
 }
