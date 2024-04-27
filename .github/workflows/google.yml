@@ -54,7 +54,12 @@ jobs:
         
     - id: 'install-argocd'
       run: |
-        kubectl create namespace argocd
+        if kubectl get namespace argocd &> /dev/null; then
+        echo "Namespace argocd already exists."
+        else
+            kubectl create namespace argocd
+            echo "Namespace argocd created."
+        fi
         kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
     - id: 'deploy-guestbook'
       run: |
