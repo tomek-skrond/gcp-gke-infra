@@ -38,22 +38,22 @@ module "gke" {
 
   configure_ip_masq = true
 
-  node_pools = [
-    {
-      name               = "cluster-node-pool"
-      machine_type       = "e2-medium"
-      min_count          = 1
-      max_count          = 100
-      disk_size_gb       = 30
-      disk_type          = "pd-standard"
-      image_type         = "COS"
-      auto_repair        = true
-      auto_upgrade       = true
-      service_account    = var.compute_engine_service_account
-      preemptible        = false
-      initial_node_count = 1
-    },
-  ]
+  # node_pools = [
+  #   {
+  #     name               = "cluster-node-pool"
+  #     machine_type       = "e2-medium"
+  #     min_count          = 1
+  #     max_count          = 100
+  #     disk_size_gb       = 30
+  #     disk_type          = "pd-standard"
+  #     image_type         = "COS"
+  #     auto_repair        = true
+  #     auto_upgrade       = true
+  #     service_account    = var.compute_engine_service_account
+  #     preemptible        = false
+  #     initial_node_count = 1
+  #   },
+  # ]
 
   stub_domains = {
     "*.${var.domain_name}" = [
