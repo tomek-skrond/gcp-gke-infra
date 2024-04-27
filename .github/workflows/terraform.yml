@@ -60,7 +60,8 @@ jobs:
     steps:
     - name: Terraform Plan
       run: terraform plan -input=false
-
+      working-directory: ./gke
+      
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
     if: ${{ github.event.inputs.terraform_operation == 'apply' }}
@@ -71,6 +72,8 @@ jobs:
     steps:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
+      working-directory: ./gke
+
 
   terraform_destroy:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
@@ -82,3 +85,4 @@ jobs:
     steps:
     - name: Terraform Destroy
       run: terraform destroy -auto-approve -input=false
+      working-directory: ./gke
