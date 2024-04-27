@@ -36,7 +36,7 @@ module "gke" {
   create_service_account = false
   deletion_protection    = false
 
-  configure_ip_masq = true
+  configure_ip_masq = false
 
   # node_pools = [
   #   {
