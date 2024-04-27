@@ -3,11 +3,12 @@ name: 'Terraform'
 on:
   push:
     branches:
-      - master  # Adjust the branch as needed
+      - master
       - test
   workflow_dispatch:
     inputs:
       job:
+        type: choice
         description: 'Select the job to run'
         required: true
         default: 'plan'
