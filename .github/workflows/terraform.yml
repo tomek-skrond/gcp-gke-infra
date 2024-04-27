@@ -55,6 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     # needs: common_steps
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./gke
     steps:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
