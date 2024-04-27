@@ -58,7 +58,8 @@ jobs:
     steps:
     - name: Terraform Plan
       run: |
-        cd gke
+        # cd gke
+        ls -la
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform plan -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
