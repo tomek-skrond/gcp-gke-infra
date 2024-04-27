@@ -56,6 +56,8 @@ jobs:
     environment: production
     needs: common_steps
     steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
     - name: Terraform Plan
       run: |
         pwd
