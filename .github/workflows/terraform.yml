@@ -32,29 +32,29 @@ permissions:
   contents: read
   
 jobs:
-  common_steps:
-    name: 'Common Steps'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v1
-      # - name: Terraform Init
-      #   run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-        # working-directory: ${{ env.TF_WORKDIR }}
+  # common_steps:
+  #   name: 'Common Steps'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - id: 'auth'
+  #       name: 'Authenticate to Google Cloud'
+  #       uses: 'google-github-actions/auth@v1'
+  #       with:
+  #         credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
+  #     # - name: Setup Terraform
+  #     #   uses: hashicorp/setup-terraform@v1
+  #     # - name: Terraform Init
+  #     #   run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+  #       # working-directory: ${{ env.TF_WORKDIR }}
   
   terraform_plan:
     if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'plan' }}
     name: 'plan'
     runs-on: ubuntu-latest
     environment: production
-    needs: common_steps
+    # needs: common_steps
     steps:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
