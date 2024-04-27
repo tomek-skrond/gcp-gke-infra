@@ -12,62 +12,71 @@ on:
           - plan
           - apply
           - destroy
+env:
+  TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
+  TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
+  TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+  TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }}
+  TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
+  TF_VAR_domain_name: ${{ secrets.TF_VAR_DOMAIN_NAME }}
+  TF_VAR_cluster_name_suffix: ${{ secrets.TF_VAR_CLUSTER_NAME_SUFFIX }}	#A suffix to append to the default cluster name	string	""	no
+  TF_VAR_network: ${{ secrets.TF_VAR_NETWORK }}	#The VPC network to host the cluster in	any	n/a	yes
+  TF_VAR_subnetwork: ${{ secrets.TF_VAR_SUBNETWORK }}	#The subnetwork to host the cluster in	any	n/a	yes
+  TF_VAR_compute_engine_service_account: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster	any	n/a	yes
+  TF_VAR_ip_range_pods: ${{ secrets.TF_VAR_IP_RANGE_PODS }}	#The secondary ip range to use for pods	any	n/a	yes
+  TF_VAR_ip_range_services: ${{ secrets.TF_VAR_IP_RANGE_SERVICES }}	#The secondary ip range to use for services	any	n/a	yes
+  BUCKET_NAME: ${{ secrets.BACKEND_BUCKET_NAME }}
 
 permissions:
   contents: read
-
+  
 jobs:
-  terraform:
-    name: 'Apply/Plan/Destroy'
+  common_steps:
+    name: 'Common Steps'
     runs-on: ubuntu-latest
-    environment: production
-    env:
-      TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-      TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
-      TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
-      TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }}
-      TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-      TF_VAR_domain_name: ${{ secrets.TF_VAR_DOMAIN_NAME }}
-      TF_VAR_cluster_name_suffix: ${{ secrets.TF_VAR_CLUSTER_NAME_SUFFIX }}	#A suffix to append to the default cluster name	string	""	no
-      TF_VAR_network: ${{ secrets.TF_VAR_NETWORK }}	#The VPC network to host the cluster in	any	n/a	yes
-      TF_VAR_subnetwork: ${{ secrets.TF_VAR_SUBNETWORK }}	#The subnetwork to host the cluster in	any	n/a	yes
-      TF_VAR_compute_engine_service_account: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster	any	n/a	yes
-      TF_VAR_ip_range_pods: ${{ secrets.TF_VAR_IP_RANGE_PODS }}	#The secondary ip range to use for pods	any	n/a	yes
-      TF_VAR_ip_range_services: ${{ secrets.TF_VAR_IP_RANGE_SERVICES }}	#The secondary ip range to use for services	any	n/a	yes
-
-      # TF_VAR_zone: ${{ secrets.TF_VAR_ZONE }}
-      BUCKET_NAME: ${{ secrets.BACKEND_BUCKET_NAME }}
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
         working-directory: ./gke
-
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v4
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-        
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-
-    - name: Terraform Init
-      run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-
+      - name: Checkout
+        uses: actions/checkout@v4
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
+  
+  terraform_plan:
+    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'plan' }}
+    name: 'plan'
+    runs-on: ubuntu-latest
+    environment: production
+    needs: common_steps
+    steps:
     - name: Terraform Plan
-      if: "${{ github.event.inputs.terraform_operation == 'plan' }}"
       run: terraform plan -input=false
 
+  terraform_apply:
+    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
+    name: 'apply'
+    runs-on: ubuntu-latest
+    environment: production
+    needs: common_steps
+    steps:
     - name: Terraform Apply
-      if: "${{ github.event.inputs.terraform_operation == 'apply' }}"
       run: terraform apply -auto-approve -input=false
 
+  terraform_destroy:
+    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
+    name: 'destroy'
+    runs-on: ubuntu-latest
+    environment: production
+    needs: common_steps
+    steps:
     - name: Terraform Destroy
-      if: "${{ github.event.inputs.terraform_operation == 'destroy' }}"
       run: terraform destroy -auto-approve -input=false
