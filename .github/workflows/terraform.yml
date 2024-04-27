@@ -32,33 +32,11 @@ permissions:
   contents: read
   
 jobs:
-  # common_steps:
-  #   name: 'Common Steps'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - id: 'auth'
-  #       name: 'Authenticate to Google Cloud'
-  #       uses: 'google-github-actions/auth@v1'
-  #       with:
-  #         credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-  #     # - name: Setup Terraform
-  #     #   uses: hashicorp/setup-terraform@v1
-  #     # - name: Terraform Init
-  #     #   run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
-  #       # working-directory: ${{ env.TF_WORKDIR }}
-  
   terraform_plan:
     if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'plan' }}
     name: 'plan'
     runs-on: ubuntu-latest
     environment: production
-    # needs: common_steps
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: ./gke
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -71,11 +49,6 @@ jobs:
         credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
     - name: Terraform Plan
       run: |
-        pwd
-        ls -la
-        ls -la ../
-        ls -la ../../
-        ls -la ../../../
         cd gke
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform plan -input=false
@@ -88,11 +61,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: terraform_plan
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: ./gke
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
     - name: Terraform Apply
       run: |
         cd gke
@@ -108,11 +86,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: terraform_plan
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: ./gke
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
     - name: Terraform Destroy
       run: |
         cd gke
