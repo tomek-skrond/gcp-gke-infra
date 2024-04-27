@@ -3,7 +3,7 @@ name: 'Terraform'
 on:
   push:
     branches:
-      - main  # Adjust the branch as needed
+      - master  # Adjust the branch as needed
 env:
   TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
   TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
