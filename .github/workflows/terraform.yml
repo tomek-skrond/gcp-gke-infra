@@ -60,7 +60,7 @@ jobs:
     steps:
     - name: Terraform Plan
       run: terraform plan -input=false
-      working-directory: ./gke
+      working-directory: gke
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
