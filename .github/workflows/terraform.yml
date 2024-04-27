@@ -1,19 +1,10 @@
 name: 'Terraform'
 
 on:
-  workflow_dispatch:
-    inputs:
-      terraform_operation:
-        description: "Terraform operation: plan, apply, destroy"
-        required: false
-        default: "plan"
-        type: choice
-        options:
-          - plan
-          - apply
-          - destroy
+  push:
+    branches:
+      - main  # Adjust the branch as needed
 env:
-  TF_WORKDIR: gke
   TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
   TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
   TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
@@ -33,7 +24,6 @@ permissions:
   
 jobs:
   terraform_plan:
-    if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'plan' }}
     name: 'plan'
     runs-on: ubuntu-latest
     environment: production
@@ -56,7 +46,7 @@ jobs:
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
-    if: ${{ github.event.inputs.terraform_operation == 'apply' }}
+    if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
     name: 'apply'
     runs-on: ubuntu-latest
     environment: production
@@ -81,7 +71,7 @@ jobs:
 
   terraform_destroy:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
-    if: ${{ github.event.inputs.terraform_operation == 'destroy' }}
+    if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
     name: 'destroy'
     runs-on: ubuntu-latest
     environment: production
