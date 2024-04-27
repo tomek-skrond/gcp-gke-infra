@@ -41,14 +41,14 @@ module "cluster" {
 
 }
 
-module "argocd" {
-  source                 = "./modules/argocd/"
-  credential_file        = var.credential_file
-  project_id             = var.project_id
-  region                 = var.region
-  cluster_ca_certificate = module.cluster.ca_certificate
-  cluster_endpoint       = module.cluster.kubernetes_endpoint
-  token                  = module.cluster.client_token
-  cluster_name = module.cluster.cluster_name
-  argo_depends_on = [module.cluster]
-}
+# module "argocd" {
+#   source                 = "./modules/argocd/"
+#   credential_file        = var.credential_file
+#   project_id             = var.project_id
+#   region                 = var.region
+#   cluster_ca_certificate = module.cluster.ca_certificate
+#   cluster_endpoint       = module.cluster.kubernetes_endpoint
+#   token                  = module.cluster.client_token
+#   cluster_name = module.cluster.cluster_name
+#   argo_depends_on = [module.cluster]
+# }
