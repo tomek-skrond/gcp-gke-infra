@@ -15,7 +15,7 @@ provider "helm" {
     token                  = var.token
     cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
     exec {
-      api_version = "client.authentication.k8s.io/v1alpha1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       args        = ["container", "clusters", "get-credentials", var.cluster_name, "--region", var.region, "--project", var.project_id]
       command     = "gcloud"
     }
