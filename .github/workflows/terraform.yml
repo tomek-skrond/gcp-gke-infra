@@ -43,8 +43,8 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
       # - name: Terraform Init
       #   run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         # working-directory: ${{ env.TF_WORKDIR }}
@@ -58,8 +58,11 @@ jobs:
     steps:
     - name: Terraform Plan
       run: |
-        # cd gke
+        pwd
         ls -la
+        ls -la ../
+        ls -la ../../
+        ls -la ../../../
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform plan -input=false
       # working-directory: ${{ env.TF_WORKDIR }}
