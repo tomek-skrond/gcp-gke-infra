@@ -57,10 +57,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: common_steps
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./gke
     steps:
     - name: Terraform Plan
       run: terraform plan -input=false
-      working-directory: gke
+
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
@@ -69,10 +73,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: terraform_plan
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./gke
     steps:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
-      working-directory: ./gke
 
 
   terraform_destroy:
@@ -82,7 +89,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: terraform_plan
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./gke
     steps:
     - name: Terraform Destroy
       run: terraform destroy -auto-approve -input=false
-      working-directory: ./gke
