@@ -1,75 +1,30 @@
-# This workflow will build a docker container, publish it to Google Container Registry, and deploy it to GKE when there is a push to the "master" branch.
-#
-# To configure this workflow:
-#
-# 1. Ensure that your repository contains the necessary configuration for your Google Kubernetes Engine cluster, including deployment.yml, kustomization.yml, service.yml, etc.
-#
-# 2. Create and configure a Workload Identity Provider for GitHub (https://github.com/google-github-actions/auth#setting-up-workload-identity-federation)
-#
-# 3. Change the values for the GAR_LOCATION, GKE_ZONE, GKE_CLUSTER, IMAGE, REPOSITORY and DEPLOYMENT_NAME environment variables (below).
-#
-# For more support on how to run the workflow, please visit https://github.com/google-github-actions/setup-gcloud/tree/master/example-workflows/gke-kustomize
-
-name: "ArgoCD"
+name: Trigger Target Workflow
 
 on:
   status:
     workflow_run:
-      workflows: ["Terraform"]
+      workflows:
+        - Terraform
       types:
         - completed
-  # push:
-  #   branches:
-  #     - test
-  #     - master
-
-env:
-    CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-    GOOGLE_CREDENTIALS: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-    COMPUTE_SERVICE_ACCOUNT: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster	any	n/a	yes
-    CLUSTER_REGION: ${{ secrets.TF_VAR_REGION }}
 
 jobs:
-  test-connection-gke:
-    name: test google cli
-    if: github.event.workflow_run.event == 'completed' && github.event.workflow_run.name == 'terraform_apply' && github.event.workflow_run.conclusion == 'success'
+  trigger:
     runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: 'read'
-      id-token: 'write'
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    # Alternative option - authentication via credentials json
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        credentials_json: '${{ env.GOOGLE_CREDENTIALS }}'
+      - name: Trigger manifests workflow
+        run: |
+          # Set the required variables
+          repo_owner="tomek-skrond" 
+          repo_name="recipe-app-manifests"  
+          event_type="trigger-workflow" 
+          service="recipe-app-manifests"
   
-    - id: 'get-credentials'
-      uses: 'google-github-actions/get-gke-credentials@v2'
-      with:
-        cluster_name: ${{ env.CLUSTER_NAME }}
-        location: ${{ env.CLUSTER_REGION }}
-        
-    - id: 'install-argocd'
-      run: |
-        if kubectl get namespace argocd &> /dev/null; then
-        echo "Namespace argocd already exists."
-        else
-            kubectl create namespace argocd
-            echo "Namespace argocd created."
-        fi
-        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-    - id: 'deploy-guestbook'
-      run: |
-        kubectl apply -f argocd/
-    # - name: Deploy
-    #   run: |-
-    #     # replacing the image name in the k8s template
-    #     ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE:TAG=$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA
-    #     ./kustomize build . | kubectl apply -f -
-    #     kubectl rollout status deployment/$DEPLOYMENT_NAME
-    #     kubectl get services -o wide
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
+            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"service\": \"$service\", \"unit\": false, \"integration\": true}}"
