@@ -1,11 +1,11 @@
-variable "cloudflare_api_token" {
-  type      = string
-  sensitive = true
-}
-variable "cloudflare_zone_id" {
-  type      = string
-  sensitive = true
-}
+# variable "cloudflare_api_token" {
+#   type      = string
+#   sensitive = true
+# }
+# variable "cloudflare_zone_id" {
+#   type      = string
+#   sensitive = true
+# }
 variable "domain_name" {
   type      = string
   sensitive = true
@@ -47,4 +47,7 @@ variable "ip_range_services" {
 variable "compute_engine_service_account" {
   description = "Service account to associate to the nodes in the cluster"
   # sensitive = true
+}
+variable "cluster_name" {
+  description = "Cluster name"
 }
