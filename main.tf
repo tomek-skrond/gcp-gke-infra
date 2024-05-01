@@ -28,6 +28,7 @@ module "cluster" {
 
   # cloudflare_api_token           = var.cloudflare_api_token
   # cloudflare_zone_id             = var.cloudflare_zone_id
+  cluster_name                   = var.cluster_name
   domain_name                    = var.domain_name
   credential_file                = var.credential_file
   project_id                     = var.project_id
