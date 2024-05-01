@@ -13,10 +13,11 @@
 name: "ArgoCD"
 
 on:
-  workflow_run:
-    workflows: ["Terraform"]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Terraform"]
+  #   types:
+  #     - completed
+  push:
     branches:
       - test
       - master
