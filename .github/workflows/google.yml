@@ -1,12 +1,13 @@
 name: Trigger Target Workflow
 
 on:
-  status:
-    workflow_run:
-      workflows:
-        - Terraform
-      types:
-        - completed
+  workflow_dispatch:
+  # status:
+  #   workflow_run:
+  #     workflows:
+  #       - Terraform
+  #     types:
+  #       - completed
 
 jobs:
   trigger:
