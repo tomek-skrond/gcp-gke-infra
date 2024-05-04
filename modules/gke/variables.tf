@@ -51,3 +51,7 @@ variable "compute_engine_service_account" {
 variable "cluster_name" {
   description = "Cluster name"
 }
+
+variable "cluster_static_ip" {
+  description = "Static IP resource name for Cluster's Ingress Controller"
+}

@@ -23,7 +23,8 @@ env:
   TF_VAR_region: ${{ vars.TF_VAR_REGION }}
   TF_VAR_ip_range_pods: ${{ vars.TF_VAR_IP_RANGE_PODS }}	#The secondary ip range to use for pods	any	n/a	yes
   TF_VAR_ip_range_services: ${{ vars.TF_VAR_IP_RANGE_SERVICES }}	#The secondary ip range to use for services	any	n/a	yes
-
+  TF_VAR_cluster_static_ip: ${{ vars.TF_VAR_CLUSTER_STATIC_IP }}
+  
   TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
   TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
   TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }}

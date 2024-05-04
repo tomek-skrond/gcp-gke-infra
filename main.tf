@@ -39,7 +39,7 @@ module "cluster" {
   ip_range_pods                  = var.ip_range_pods
   ip_range_services              = var.ip_range_services
   compute_engine_service_account = var.compute_engine_service_account
-
+  cluster_static_ip = var.cluster_static_ip
 }
 
 # module "argocd" {
