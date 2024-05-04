@@ -22,7 +22,7 @@ resource "cloudflare_record" "default" {
 resource "cloudflare_record" "recipes" {
   zone_id = var.cloudflare_zone_id
   name    = "recipes"
-  target  = "@"
+  domain  = "@"
   type    = "CNAME"
   proxied = false
 }
