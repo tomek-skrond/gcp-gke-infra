@@ -19,3 +19,7 @@ output "service_account" {
   description = "The default service account used for running nodes."
   value       = module.gke.service_account
 }
+
+output "cluster_ip_address" {
+  value = google_compute_address.default.address
+}
