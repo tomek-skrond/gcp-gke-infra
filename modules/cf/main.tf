@@ -13,7 +13,7 @@ provider "cloudflare" {
 
 resource "cloudflare_record" "default" {
   zone_id = var.cloudflare_zone_id
-  name    = ""
+  name    = "@"
   value   = var.ip_address
   type    = "A"
   proxied = false
@@ -22,7 +22,7 @@ resource "cloudflare_record" "default" {
 resource "cloudflare_record" "recipes" {
   zone_id = var.cloudflare_zone_id
   name    = "recipes"
-  value   = var.ip_address
+  target  = "@"
   type    = "CNAME"
   proxied = false
 }
