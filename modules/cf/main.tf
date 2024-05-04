@@ -13,16 +13,8 @@ provider "cloudflare" {
 
 resource "cloudflare_record" "default" {
   zone_id = var.cloudflare_zone_id
-  name    = "@"
+  name    = "recipes"
   value   = var.ip_address
   type    = "A"
-  proxied = false
-}
-
-resource "cloudflare_record" "recipes" {
-  zone_id = var.cloudflare_zone_id
-  name    = "recipes"
-  domain  = "@"
-  type    = "CNAME"
   proxied = false
 }
