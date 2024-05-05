@@ -38,14 +38,14 @@ module "cluster" {
   cluster_static_ip = var.cluster_static_ip
 }
 
-module "cf" {
-  source = "./modules/cf"
+# module "cf" {
+#   source = "./modules/cf"
 
-  cloudflare_zone_id = var.cloudflare_zone_id
-  cloudflare_api_token = var.cloudflare_api_token
-  ip_address = module.cluster.cluster_ip_address
+#   cloudflare_zone_id = var.cloudflare_zone_id
+#   cloudflare_api_token = var.cloudflare_api_token
+#   ip_address = module.cluster.cluster_ip_address
 
-}
+# }
 # module "argocd" {
 #   source                 = "./modules/argocd/"
 #   credential_file        = var.credential_file
