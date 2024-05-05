@@ -17,19 +17,19 @@ on:
           - destroy 
       
 env:
-  TF_VAR_cluster_name: ${{ vars.CLUSTER_NAME }}
-  TF_VAR_network: ${{ vars.TF_VAR_NETWORK }}	#The VPC network to host the cluster in	any	n/a	yes
-  TF_VAR_subnetwork: ${{ vars.TF_VAR_SUBNETWORK }}	#The subnetwork to host the cluster in	any	n/a	yes
-  TF_VAR_region: ${{ vars.TF_VAR_REGION }}
-  TF_VAR_ip_range_pods: ${{ vars.TF_VAR_IP_RANGE_PODS }}	#The secondary ip range to use for pods	any	n/a	yes
-  TF_VAR_ip_range_services: ${{ vars.TF_VAR_IP_RANGE_SERVICES }}	#The secondary ip range to use for services	any	n/a	yes
-  TF_VAR_cluster_static_ip: ${{ vars.TF_VAR_CLUSTER_STATIC_IP }}
+  TF_VAR_cluster_name: ${{ vars.CLUSTER_NAME }} #Cluster name
+  TF_VAR_network: ${{ vars.TF_VAR_NETWORK }}	#The VPC network to host the cluster in any n/a yes
+  TF_VAR_subnetwork: ${{ vars.TF_VAR_SUBNETWORK }}	#The subnetwork to host the cluster in any n/a yes
+  TF_VAR_region: ${{ vars.TF_VAR_REGION }} #Cluster region
+  TF_VAR_ip_range_pods: ${{ vars.TF_VAR_IP_RANGE_PODS }} #The secondary ip range to use for pods any n/a yes
+  TF_VAR_ip_range_services: ${{ vars.TF_VAR_IP_RANGE_SERVICES }} #The secondary ip range to use for services any n/a yes
+  TF_VAR_cluster_static_ip: ${{ vars.TF_VAR_CLUSTER_STATIC_IP }} #Static IP name of cluster 
   
-  TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }}
-  TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }}
-  TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }}
-  TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-  TF_VAR_domain_name: ${{ secrets.TF_VAR_DOMAIN_NAME }}
+  TF_VAR_credential_file: ${{ secrets.TF_VAR_CREDENTIAL_FILE }} #JSON credentials for service account
+  TF_VAR_project_id: ${{ secrets.TF_VAR_PROJECT }} #GCP Project ID
+  TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} #Cloudflare API Token
+  TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }} #Cloudflare Zone id
+  TF_VAR_domain_name: ${{ secrets.TF_VAR_DOMAIN_NAME }} #Domain name
   TF_VAR_cluster_name_suffix: ${{ secrets.TF_VAR_CLUSTER_NAME_SUFFIX }}	#A suffix to append to the default cluster name	string	""	no
   TF_VAR_compute_engine_service_account: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster	any	n/a	yes
   BUCKET_NAME: ${{ secrets.BACKEND_BUCKET_NAME }}
@@ -57,8 +57,6 @@ jobs:
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform fmt
         terraform validate
-      # terraform plan -input=false -lock=false
-      # working-directory: ${{ env.TF_WORKDIR }}
       
   terraform_apply:
     # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
@@ -82,7 +80,6 @@ jobs:
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform apply -auto-approve -input=false -lock=false
-      # working-directory: ${{ env.TF_WORKDIR }}
 
 
   terraform_destroy:
@@ -107,4 +104,3 @@ jobs:
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform destroy -auto-approve -input=false -lock=false
-      # working-directory: ${{ env.TF_WORKDIR }}
