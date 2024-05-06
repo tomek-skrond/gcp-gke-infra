@@ -26,7 +26,6 @@ module "gke" {
   version = "~> 30.0"
 
   project_id             = var.project_id
-  # name                   = "${local.cluster_type}-cluster${var.cluster_name_suffix}"
   name = var.cluster_name
   region                 = var.region
   network                = module.gcp-network.network_name
