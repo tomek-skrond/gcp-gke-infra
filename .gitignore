@@ -1,5 +1,7 @@
 .env
 
+kickstart/.terraform.lock.hcl
+
 .terraform.lock.hcl
 
 # Local .terraform directories

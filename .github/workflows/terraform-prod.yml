@@ -31,8 +31,8 @@ env:
   TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} #Cloudflare API Token
   TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }} #Cloudflare Zone id
   TF_VAR_domain_name: ${{ secrets.TF_VAR_DOMAIN_NAME }} #Domain name
-  TF_VAR_cluster_name_suffix: ${{ secrets.TF_VAR_CLUSTER_NAME_SUFFIX }}	#A suffix to append to the default cluster name	string	""	no
-  TF_VAR_compute_engine_service_account: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster	any	n/a	yes
+  TF_VAR_cluster_name_suffix: ${{ secrets.TF_VAR_CLUSTER_NAME_SUFFIX }}	#variable not used, soon to delete. A suffix to append to the default cluster name string "" no
+  TF_VAR_compute_engine_service_account: ${{ secrets.TF_VAR_COMPUTE_ENGINE_SERVICE_ACCOUNT }} #Service account to associate to the nodes in the cluster any n/a yes
 
 permissions:
   contents: read
@@ -59,8 +59,6 @@ jobs:
         terraform validate
       
   terraform_apply:
-    # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'apply' }}
-    # if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'apply'
     name: 'apply'
     runs-on: ubuntu-latest
@@ -83,8 +81,6 @@ jobs:
 
 
   terraform_destroy:
-    # if: ${{ github.event_name == 'push' || github.event.inputs.terraform_operation == 'destroy' }}
-    # if: github.event_name == 'workflow_dispatch'  # Only run on manual triggers
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'destroy'
     name: 'destroy'
     runs-on: ubuntu-latest
@@ -104,3 +100,23 @@ jobs:
       run: |
         terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}"
         terraform destroy -auto-approve -input=false -lock=false
+
+  trigger:
+    runs-on: ubuntu-latest
+    needs: terraform_apply
+    steps:
+      - name: Trigger manifests workflow
+        run: |
+          # Set the required variables
+          repo_owner="tomek-skrond"
+          repo_name="recipe-app-manifests"  
+          event_type="trigger-workflow" 
+          service="recipe-app-manifests"
+  
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
+            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"service\": \"$service\", \"unit\": false, \"integration\": true}}"
