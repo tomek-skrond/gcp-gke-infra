@@ -28,7 +28,6 @@ module "cluster" {
   domain_name                    = var.domain_name
   credential_file                = var.credential_file
   project_id                     = var.project_id
-  cluster_name_suffix            = var.cluster_name_suffix
   region                         = var.region
   network                        = var.network
   subnetwork                     = var.subnetwork
